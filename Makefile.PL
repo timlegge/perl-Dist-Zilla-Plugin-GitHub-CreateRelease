@@ -16,14 +16,17 @@ my %WriteMakefileArgs = (
   "MIN_PERL_VERSION" => "5.008",
   "NAME" => "Dist::Zilla::Plugin::GitHub::CreateRelease",
   "PREREQ_PM" => {
+    "Config::Identity" => "0.0019",
     "Digest::SHA" => "6.02",
     "Dist::Zilla" => "2.100921",
-    "File::chdir" => 0,
+    "File::Slurper" => 0,
     "Git::Wrapper" => "0.048",
-    "Module::Signature" => "0.87",
-    "Moose" => "2.2014"
+    "Moose" => "2.2014",
+    "Pithub::Repos::Releases" => "0.01040",
+    "URI" => 0,
+    "URI::Escape" => 0
   },
-  "VERSION" => "0.0001",
+  "VERSION" => "0.0002",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -31,12 +34,15 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Config::Identity" => "0.0019",
   "Digest::SHA" => "6.02",
   "Dist::Zilla" => "2.100921",
-  "File::chdir" => 0,
+  "File::Slurper" => 0,
   "Git::Wrapper" => "0.048",
-  "Module::Signature" => "0.87",
-  "Moose" => "2.2014"
+  "Moose" => "2.2014",
+  "Pithub::Repos::Releases" => "0.01040",
+  "URI" => 0,
+  "URI::Escape" => 0
 );
 
 
