@@ -30,9 +30,6 @@ has notes_file => (is => 'ro', default => 'Release-VERSION');
 has draft => (is => 'ro', default => 0);
 has add_checksum => (is => 'ro', default => 1);
 
-use constant false => \0;
-sub true () { return \1 } # note the empty prototype
-
 sub _create_release {
   my $self      = shift;
   my $tag       = shift;
@@ -53,15 +50,16 @@ sub _create_release {
   );
   die "Unable to instantiate Pithub::Repos::Releases" if (! defined $releases);
 
+  require JSON::MaybeXS;
   my $release = $releases->create(
     data => {
       tag_name         => "$tag",
       target_commitish => $branch,
       name             => $title,
       body             => $notes,
-      draft            => $self->{draft} ? true : false,
-      prerelease       => $self->zilla->is_trial ? true : false,
-      generate_release_notes => $self->{github_notes} ? true : false,
+      draft            => $self->{draft} ? JSON::MaybeXS::true : JSON::MaybeXS::false,
+      prerelease       => $self->zilla->is_trial ? JSON::MaybeXS::true : JSON::MaybeXS::false,
+      generate_release_notes => $self->{github_notes} ? JSON::MaybeXS::true : JSON::MaybeXS::false,
     }
   );
   die "Unable to create GitHub release\n" if (! defined $release->content->{id});
@@ -404,14 +402,6 @@ it active.
 =item after_release
 
 The main processing function that is called automatically after the release is complete.
-
-=item true
-
-Boolean true constant
-
-=item false
-
-Boolean false constant
 
 =back
 

@@ -2,7 +2,7 @@ NAME
     Dist::Zilla::Plugin::GitHub::CreateRelease - Create a GitHub Release
 
 VERSION
-    version 0.0002
+    version 0.0003
 
 SYNOPSIS
     In your dist.ini:
@@ -132,12 +132,6 @@ METHODS
     after_release
         The main processing function that is called automatically after the
         release is complete.
-
-    true
-        Boolean true constant
-
-    false
-        Boolean false constant
 
 AUTHOR
       Timothy Legge <timlegge@cpan.org>
