@@ -7,7 +7,7 @@ package Dist::Zilla::Plugin::GitHub::CreateRelease;
 # ABSTRACT: Create a GitHub Release
 
 use Pithub::Repos::Releases;
-use Config::Identity::GitHub;
+use Config::Identity;
 use Git::Wrapper;
 use File::Basename;
 use URI;
@@ -29,6 +29,7 @@ has notes_from => (is => 'ro', default => 'SignReleaseNotes');
 has notes_file => (is => 'ro', default => 'Release-VERSION');
 has draft => (is => 'ro', default => 0);
 has add_checksum => (is => 'ro', default => 1);
+has org_id => (is => 'ro', default => 'github');
 
 sub _create_release {
   my $self      = shift;
@@ -39,9 +40,11 @@ sub _create_release {
   my $filename  = shift;
   my $cpan_tar  = shift;
 
-  my %identity = Config::Identity::GitHub->load_check;
+  my @fields = ("login", "token");
+  my %identity = Config::Identity->load_check($self->{org_id}, \@fields);
 
-  die "Unable to load github token from ~/.github-identity" if (! defined $identity{token});
+  my $org = $self->{org_id} ? $self->{org_id} : "github";
+  die "Unable to load github token from ~/.$org-identity or ~/.$org" if (! defined $identity{token});
 
   my $releases = Pithub::Repos::Releases->new(
     user  => $identity{login} || $self->{username},
@@ -268,6 +271,7 @@ In your F<dist.ini>:
  draft = 0                       ; default = 0 (false)
  hash_alg = sha256               ; default = sha256
  add_checksum = 1                ; default = 1 (true)
+ org_id = some_id_identifier     ; default = github (~/.github-identity or ~/.github)
  title_template = Version RELEASE - TRIAL CPAN release      ; this is the default
 
 =head1 Required Plugins
@@ -392,6 +396,17 @@ number if it exists.
 An integer value specifying true/false.  If the value is true (not 0) the api call instructs
 github that the Release is a draft.  You must publish it via the github webpage to make
 it active.
+
+=item org_id
+
+A string value that allows you to reference another identity file.  GitHub has personal
+accounts and organizations.  If you have repositories in both personal and organizations
+(or multiple organizations) this allows you to choose a specific identity for each repo.
+
+The default is B<github> and references: B<~/.github-identity> or B<~/.github>.
+
+Specifying B<org_id = project> in your dist.ini would reference: B<~/.project-identity>
+or B<~/.project>.
 
 =back
 
