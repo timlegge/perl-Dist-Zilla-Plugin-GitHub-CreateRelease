@@ -408,7 +408,7 @@ name based on the remote url but this setting can override the name that is dete
 =item remote_name
 
 A string value that specifies the name of the git remote URL.  This is typically
-origin or upstream.  It is the namue of the URL where you want to create the release.
+origin or upstream.  It is the name of the URL where you want to create the release.
 
 It defaults to B<origin>.
 
