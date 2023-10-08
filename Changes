@@ -2,6 +2,8 @@ Revision history for Dist-Zilla-Plugin-GitHub-CreateRelease
 
 {{$NEXT}}
 
+0.0005 -- Sun Oct 08 11:37:09 ADT 2023
+
 0.0004 -- Wed Oct 04 16:29:46 ADT 2023
 
     [Significant Changes from 0.0002]
