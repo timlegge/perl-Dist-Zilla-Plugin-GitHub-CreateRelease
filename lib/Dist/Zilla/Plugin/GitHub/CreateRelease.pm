@@ -67,8 +67,14 @@ sub _create_release {
       generate_release_notes => $self->{github_notes} ? JSON::MaybeXS::true : JSON::MaybeXS::false,
     }
   );
-  die "Unable to create GitHub release\n" if (! defined $release->content->{id});
+  die "Discussion category name is invalid" if  ($release->response eq '404');
+  die "Validation failed, or the endpoint has been spammed." if  ($release->response eq '422');
+  die "login ($identity{login}) or token invalid for the specified repository ($releases->{repo})\n"
+      if  ($release->code eq '403');
 
+  if (! defined $release->content->{id}) {
+    die "Unable to create GitHub release\n";
+  }
   $self->log("Release created at $releases->{repo} for $identity{login}");
 
   my $asset = $releases->assets->create(
@@ -358,7 +364,7 @@ This module uses Config::Identity::GitHub to access the GitHub API credentials.
 You need to create a file in your home directory named B<.github-identity>.  It
 requires the following fields:
 
- login github_username
+ login github_username OR github_organization
  token github_....
 
 The GitHub API has a lot of options for the generation of Personal Access Tokens.
@@ -379,7 +385,20 @@ have gpg configured you can encrypt the file:
  gpg -d ~/.github-identity.asc
  # Replace the clear text version (uncomment next line)
  # mv ~/.github-identity.asc ~/.github-identity
- 
+
+=head2 PERSONAL ACCOUNT VERSUS ORGANIZATION
+
+The B<login> specified in the B<.github-identity> file above should reference the
+personal account B<OR> the organization that contains the repo.
+
+A personal access token must have the B<Resource owner> set to the organization but
+does not require special permissions on the organization.  It simply needs read/write
+on the code and read access on the metadata of the repository.
+
+As specified in the B<org_id> attribute details below you can have separate identities
+for each repository.  The org_id tells the module where to look for the specific
+identity file that contains the correct login and token.
+
 =head1 DESCRIPTION
 
 This plugin will create a GitHub Release and attach a copy of the

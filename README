@@ -2,7 +2,7 @@ NAME
     Dist::Zilla::Plugin::GitHub::CreateRelease - Create a GitHub Release
 
 VERSION
-    version 0.0004
+    version 0.0005
 
 SYNOPSIS
     In your dist.ini:
@@ -48,7 +48,7 @@ GITHUB API AUTHENTICATION
     You need to create a file in your home directory named .github-identity.
     It requires the following fields:
 
-     login github_username
+     login github_username OR github_organization
      token github_....
 
     The GitHub API has a lot of options for the generation of Personal
@@ -70,6 +70,20 @@ GITHUB API AUTHENTICATION
      gpg -d ~/.github-identity.asc
      # Replace the clear text version (uncomment next line)
      # mv ~/.github-identity.asc ~/.github-identity
+
+  PERSONAL ACCOUNT VERSUS ORGANIZATION
+    The login specified in the .github-identity file above should reference
+    the personal account OR the organization that contains the repo.
+
+    A personal access token must have the Resource owner set to the
+    organization but does not require special permissions on the
+    organization. It simply needs read/write on the code and read access on
+    the metadata of the repository.
+
+    As specified in the org_id attribute details below you can have separate
+    identities for each repository. The org_id tells the module where to
+    look for the specific identity file that contains the correct login and
+    token.
 
 ATTRIBUTES
     hash_alg
