@@ -12,6 +12,9 @@ my %WriteMakefileArgs = (
     "ExtUtils::MakeMaker" => 0
   },
   "DISTNAME" => "Dist-Zilla-Plugin-GitHub-CreateRelease",
+  "EXE_FILES" => [
+    "bin/createrelease.pl"
+  ],
   "LICENSE" => "perl",
   "MIN_PERL_VERSION" => "5.008",
   "NAME" => "Dist::Zilla::Plugin::GitHub::CreateRelease",
@@ -26,7 +29,7 @@ my %WriteMakefileArgs = (
     "URI" => 0,
     "URI::Escape" => 0
   },
-  "VERSION" => "0.0005",
+  "VERSION" => "0.0006",
   "test" => {
     "TESTS" => "t/*.t"
   }
