@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use 5.008;
+use 5.020000;
 
 use ExtUtils::MakeMaker;
 
@@ -16,20 +16,40 @@ my %WriteMakefileArgs = (
     "bin/createrelease.pl"
   ],
   "LICENSE" => "perl",
-  "MIN_PERL_VERSION" => "5.008",
+  "MIN_PERL_VERSION" => "5.020000",
   "NAME" => "Dist::Zilla::Plugin::GitHub::CreateRelease",
   "PREREQ_PM" => {
-    "Config::Identity" => "0.0019",
-    "Digest::SHA" => "6.02",
-    "Dist::Zilla" => "2.100921",
+    "CPAN::Changes" => "0.500002",
+    "Config::INI::Reader" => 0,
+    "Config::Identity" => 0,
+    "Crypt::OpenPGP" => 0,
+    "DDP" => 0,
+    "Digest::SHA" => 0,
+    "Dist::Zilla::Role::AfterRelease" => 0,
+    "Exporter" => 0,
+    "Feature::Compat::Class" => 0,
+    "File::Basename" => 0,
     "File::Slurper" => 0,
-    "Git::Wrapper" => "0.048",
-    "Moose" => "2.2014",
-    "Pithub::Repos::Releases" => "0.01040",
+    "File::Temp" => 0,
+    "Git::Wrapper" => 0,
+    "JSON::MaybeXS" => "1.004000",
+    "LWP::Simple" => 0,
+    "MetaCPAN::Client" => 0,
+    "Module::Signature" => 0,
+    "Moose" => 0,
+    "Pithub::Repos::Releases" => 0,
+    "Try::Tiny" => 0,
     "URI" => 0,
-    "URI::Escape" => 0
+    "URI::Escape" => 0,
+    "feature" => 0,
+    "namespace::autoclean" => 0,
+    "strict" => 0,
+    "warnings" => 0
   },
-  "VERSION" => "0.0006",
+  "TEST_REQUIRES" => {
+    "Test::More" => 0
+  },
+  "VERSION" => "0.0007",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -37,15 +57,33 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
-  "Config::Identity" => "0.0019",
-  "Digest::SHA" => "6.02",
-  "Dist::Zilla" => "2.100921",
+  "CPAN::Changes" => "0.500002",
+  "Config::INI::Reader" => 0,
+  "Config::Identity" => 0,
+  "Crypt::OpenPGP" => 0,
+  "DDP" => 0,
+  "Digest::SHA" => 0,
+  "Dist::Zilla::Role::AfterRelease" => 0,
+  "Exporter" => 0,
+  "Feature::Compat::Class" => 0,
+  "File::Basename" => 0,
   "File::Slurper" => 0,
-  "Git::Wrapper" => "0.048",
-  "Moose" => "2.2014",
-  "Pithub::Repos::Releases" => "0.01040",
+  "File::Temp" => 0,
+  "Git::Wrapper" => 0,
+  "JSON::MaybeXS" => "1.004000",
+  "LWP::Simple" => 0,
+  "MetaCPAN::Client" => 0,
+  "Module::Signature" => 0,
+  "Moose" => 0,
+  "Pithub::Repos::Releases" => 0,
+  "Test::More" => 0,
+  "Try::Tiny" => 0,
   "URI" => 0,
-  "URI::Escape" => 0
+  "URI::Escape" => 0,
+  "feature" => 0,
+  "namespace::autoclean" => 0,
+  "strict" => 0,
+  "warnings" => 0
 );
 
 
