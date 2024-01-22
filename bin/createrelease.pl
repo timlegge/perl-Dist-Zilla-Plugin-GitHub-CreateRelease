@@ -1,9 +1,7 @@
 #!/usr/bin/env perl
-use v5.38;
+use v5.20;
 use Feature::Compat::Class;
-use feature 'class';
 use feature 'signatures';
-use experimental 'class';
 
 # PODNAME: create_release.pl - Helper script to create a GitHub Release
 use Config::INI::Reader;
@@ -15,6 +13,7 @@ use File::Slurper qw( read_binary read_text );
 use URI::Escape qw( uri_unescape );
 use DDP;
 use CPAN::Changes 0.500002;
+use JSON::MaybeXS 1.004000;
 
 class GitHub::Release {
     field $repo             :param //= '';
@@ -36,7 +35,6 @@ class GitHub::Release {
     field $sign             :param //= 0;
 
     ADJUST {
-        require JSON::MaybeXS;
         $draft          = $draft ? JSON::MaybeXS::true : JSON::MaybeXS::false;
         $trial          = $trial ? JSON::MaybeXS::true : JSON::MaybeXS::false;
         $github_notes   = $github_notes ? JSON::MaybeXS::true : JSON::MaybeXS::false;

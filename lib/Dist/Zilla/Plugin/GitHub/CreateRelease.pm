@@ -16,6 +16,7 @@ use File::Slurper qw/read_text read_binary/;
 use Exporter qw(import);
 use Moose;
 use Try::Tiny;
+use JSON::MaybeXS 1.004000;
 with 'Dist::Zilla::Role::AfterRelease';
 
 use namespace::autoclean;
@@ -55,7 +56,6 @@ sub _create_release {
   );
   die "Unable to instantiate Pithub::Repos::Releases" if (! defined $releases);
 
-  require JSON::MaybeXS;
   my $release = $releases->create(
     data => {
       tag_name         => "$tag",
