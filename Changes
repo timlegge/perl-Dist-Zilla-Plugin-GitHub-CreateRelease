@@ -2,6 +2,14 @@ Revision history for Dist-Zilla-Plugin-GitHub-CreateRelease
 
 {{$NEXT}}
 
+0.0007 -- Sun Jan 21 22:21:03 AST 2024
+
+    [Detailed Change Log]
+    - c24bf79 Update version for release
+    - 24d5c17 Fix missing dependencies for script
+    - 09dd7a5 Specify minimum JSON::MaybeXS version
+    - ad98a49 v0.0006
+
 0.0006 -- Fri Jan 19 23:07:02 AST 2024
 
     [Significant Changes from 0.0005]
