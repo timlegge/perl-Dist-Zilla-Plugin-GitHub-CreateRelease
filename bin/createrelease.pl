@@ -320,28 +320,6 @@ class GitHub::Release {
         return $tags[0];
     }
 
-    method _sign_notes ($notes) {
-        if ($self->get_sign()) {
-            use Module::Signature qw/ $SIGNATURE $Preamble /;
-            use File::Temp qw/ tempfile /;
-            my $fh;
-            ($fh, $SIGNATURE) = tempfile();
-            $Preamble = '';
-            my $signed;
-            if (my $version = Module::Signature::_has_gpg()) {
-                $signed = Module::Signature::_sign_gpg($SIGNATURE, $notes, $version);
-            }
-            elsif (eval {require Crypt::OpenPGP; 1}) {
-                $signed = Module::Signature::_sign_crypt_openpgp($SIGNATURE, $notes);
-            }
-            use File::Slurper qw/ read_text /;
-            print "tmpfiel: $SIGNATURE\n";
-            $notes = read_text($SIGNATURE) if $signed;
-            unlink $SIGNATURE;
-        }
-        return $notes;
-    }
-
     method get_notes {
         my $notes;
         if ($notes_from eq 'SignReleaseNotes' or $notes_from eq 'FromFile') {
@@ -429,7 +407,6 @@ class GitHub::Release {
     }
 
     method _as_code ($text) {
-        $text = $self->_sign_notes($text);
         return '```' . "\n" . $text . "\n" . '```' if $notes_as_code;
         return $text;
     }
