@@ -537,7 +537,7 @@ The main processing function that is called automatically after the release is c
 
 =head1 AUTHOR
 
-  Timothy Legge <timlegge@cpan.org>
+  Timothy Legge <timlegge@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
