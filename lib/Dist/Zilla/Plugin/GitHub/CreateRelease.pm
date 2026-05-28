@@ -186,19 +186,30 @@ sub _get_notes_from_changes {
   my $prev = $tags[1];
 
   my $file = read_text($self->{notes_file});
-  my @lines = split /\n/, $file;
-  my $print = 0;
-  my $notes = "";
-  foreach my $line (@lines) {
-    $print = 1 if ($line =~ /^$vers/);
-    $print = 0 if ($line =~ /^$prev/);
-    $notes .= $line . "\n" if $print;
-  }
+  my $notes = $self->_extract_changes($file, $vers, $prev);
+
   return $self->_as_code($notes) if (! $self->{add_checksum});
 
   $notes .= $self->_get_checksum($filename);
 
   return $self->_as_code($notes);
+}
+
+sub _extract_changes {
+  my ($self, $text, $vers, $prev) = @_;
+
+  my $print = 0;
+  my $notes = "";
+  for my $line (split /\n/, $text) {
+    # On the first release "git for-each-ref --count=2" returns a single
+    # tag, so $prev is undef; guard against it to avoid an uninitialized
+    # warning.  \Q...\E keeps version numbers (e.g. 0.003) from being
+    # treated as regex patterns.
+    $print = 1 if (defined $vers && $line =~ /^\Q$vers\E/);
+    $print = 0 if (defined $prev && $line =~ /^\Q$prev\E/);
+    $notes .= $line . "\n" if $print;
+  }
+  return $notes;
 }
 
 sub _get_notes_from_file {
