@@ -51,7 +51,7 @@ sub _create_release {
 
   my $releases = Pithub::Repos::Releases->new(
     user  => $identity{login} || $self->{username},
-    repo  => $self->_get_repo_name() || $self->{repo},
+    repo  => $self->{repo} || $self->_get_repo_name(),
     token => $identity{token},
   );
   die "Unable to instantiate Pithub::Repos::Releases" if (! defined $releases);
@@ -146,13 +146,25 @@ sub _get_repo_name {
     };
   };
 
-  #FIXME there must be a better way...
-  my $basename = uri_unescape( basename(URI->new( $url[0])->path));
-  $basename =~ s/.git//;
+  my $basename = $self->_repo_name_from_url($url[0]);
   $self->log("Release will be created using $basename");
 
   return $basename;
 
+}
+
+sub _repo_name_from_url {
+  my $self = shift;
+  my $url  = shift;
+
+  my $basename = uri_unescape( basename( URI->new($url)->path ) );
+  # Strip only a trailing ".git" suffix.  The old s/.git// matched any
+  # character followed by "git" anywhere in the string, so a repository
+  # whose name contains "git" (e.g. p5-git-libgit2) lost the wrong part
+  # and turned into p5-libgit2.
+  $basename =~ s/\.git$//;
+
+  return $basename;
 }
 
 sub _generate_release_notes {
