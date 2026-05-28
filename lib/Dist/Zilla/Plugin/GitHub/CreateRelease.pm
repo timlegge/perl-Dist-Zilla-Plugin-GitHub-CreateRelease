@@ -16,7 +16,6 @@ use File::Slurper qw/read_text read_binary/;
 use Exporter qw(import);
 use Moose;
 use Try::Tiny;
-use JSON::MaybeXS 1.004000;
 with 'Dist::Zilla::Role::AfterRelease';
 
 use namespace::autoclean;
@@ -62,9 +61,9 @@ sub _create_release {
       target_commitish => $branch,
       name             => $title,
       body             => $notes,
-      draft            => $self->{draft} ? JSON::MaybeXS::true : JSON::MaybeXS::false,
-      prerelease       => $self->zilla->is_trial ? JSON::MaybeXS::true : JSON::MaybeXS::false,
-      generate_release_notes => $self->{github_notes} ? JSON::MaybeXS::true : JSON::MaybeXS::false,
+      draft            => $self->{draft} ? \1 : \0,
+      prerelease       => $self->zilla->is_trial ? \1 : \0,
+      generate_release_notes => $self->{github_notes} ? \1 : \0,
     }
   );
   die "Discussion category name is invalid" if  ($release->response eq '404');
