@@ -302,10 +302,11 @@ class GitHub::Release {
     method set_version ($ver){
         return if not defined $ver;
         $version = $ver;
-        print "Version: ", $version, "\n";
     }
 
     method get_version {
+        return $version if defined $version;
+
         my $git = Git::Wrapper->new('./');
 
         my @tags;
@@ -425,19 +426,18 @@ class GitHub::Release {
 }
 
 use Getopt::Long;
-my $prod    = 0;
-my $trial  = 0;
-my $draft   = 1;
-my $configfile='dist.ini';
+my $trial      = 0;
+my $nodraft    = 0;
+my $configfile ='dist.ini';
 my $version;
 
-GetOptions ("draft"     => \$draft,
-            "prod"      => \$prod,
-            "trial"   => \$trial,
+GetOptions ("no-draft"      => \$nodraft,
+            "trial"         => \$trial,
             "configfile=s"  => \$configfile,
-            "version=s"   => \$version)
-or die("Error in command line arguments --draft or --prod are supported\n");
+            "version=s"     => \$version)
+or die("Error in command line arguments --configfile, --no-draft, --trial or --version are supported\n");
 
+my $draft = $nodraft ? 0 : 1;
 # Load the Dist::Zilla file
 my $config      = Config::INI::Reader->read_file($configfile);
 # Obtain the GitHub::CreateRelease attributes
@@ -445,11 +445,11 @@ my $attributes  = $config->{'GitHub::CreateRelease'};
 
 my $release     = GitHub::Release->new(%{$attributes});
 
-print "Trial: $prod\n";
+print "Trial: $trial\n";
 print "Draft: $draft\n";
 print "Config: $configfile\n";
 print "Version: $version\n" if defined $version;
-$release->set_trial($prod ? 0 : $prod);
+$release->set_trial($trial);
 $release->set_draft($draft);
 $release->set_version($version);
 $release->set_config_filename($configfile ? $configfile : '');
