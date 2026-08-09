@@ -189,7 +189,7 @@ sub _get_repo_owner {
     @url = $git->RUN('config', '--get', $setting);
   }
   catch {
-    return undef;
+    return;
   };
 
   return $self->_repo_owner_from_url($url[0]);
@@ -204,7 +204,7 @@ sub _repo_owner_from_url {
   my @parts = split m{/}, $path;
   pop @parts;
 
-  return undef unless @parts;
+  return unless @parts;
 
   return uri_unescape( join('/', @parts) );
 }
