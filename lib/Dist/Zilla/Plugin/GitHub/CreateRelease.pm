@@ -16,6 +16,7 @@ use File::Slurper qw/read_text read_binary/;
 use Exporter qw(import);
 use Moose;
 use Try::Tiny;
+use CPAN::Changes;
 with 'Dist::Zilla::Role::AfterRelease';
 
 use namespace::autoclean;
@@ -239,8 +240,8 @@ sub _get_notes_from_changes {
   my $vers = $tags[0];
   my $prev = $tags[1];
 
-  my $file = read_text($self->{notes_file});
-  my $notes = $self->_extract_changes($file, $vers, $prev);
+  my $changes = CPAN::Changes->load($self->{notes_file});
+  my $notes = $changes->find_release($tags[0])->serialize();
 
   return $self->_as_code($notes) if (! $self->{add_checksum});
 

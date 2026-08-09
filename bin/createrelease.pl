@@ -367,7 +367,7 @@ class GitHub::Release {
         };
 
         my $changes = CPAN::Changes->load($notes_file);
-        my $notes = $changes->release($tags[0])->serialize();
+        my $notes = $changes->find_release($tags[0])->serialize();
         return $self->_as_code($notes) if (! $add_checksum);
 
         $notes .= "\n" . $self->get_checksum($filename);
