@@ -22,6 +22,7 @@ use namespace::autoclean;
 
 has hash_alg => (is => 'ro', default => 'sha256');
 has repo => (is => 'ro');
+has repo_owner => (is => 'ro');
 has branch => (is => 'ro', default => 'main');
 has remote_name => (is => 'ro', default => 'origin');
 has title_template => (is => 'ro', default => 'Version RELEASE - TRIAL CPAN release');
@@ -49,7 +50,7 @@ sub _create_release {
   die "Unable to load github token from ~/.$org-identity or ~/.$org" if (! defined $identity{token});
 
   my $releases = Pithub::Repos::Releases->new(
-    user  => $identity{login} || $self->{username},
+    user  => $self->{repo_owner} || $self->_get_repo_owner() || $identity{login} || $self->{username},
     repo  => $self->{repo} || $self->_get_repo_name(),
     token => $identity{token},
   );
@@ -170,6 +171,42 @@ sub _repo_name_from_url {
   $basename =~ s/\.git$//;
 
   return $basename;
+}
+
+# The remote url's path holds both the owner and the repo name
+# (e.g. "pplu/kubernetes-rest.git"), but _repo_name_from_url only ever
+# kept the last segment. That silently discarded the owner, so a release
+# was always attempted under the github-identity login instead of the
+# repository's actual owner -- which fails whenever they differ, e.g. for
+# a repo that isn't owned by the account named in ~/.github-identity.
+sub _get_repo_owner {
+  my $self = shift;
+
+  my $setting = "remote." . $self->{remote_name} . ".url";
+  my $git = Git::Wrapper->new('./');
+  my @url;
+  try {
+    @url = $git->RUN('config', '--get', $setting);
+  }
+  catch {
+    return undef;
+  };
+
+  return $self->_repo_owner_from_url($url[0]);
+}
+
+sub _repo_owner_from_url {
+  my $self = shift;
+  my $url  = shift;
+
+  my $path = URI->new($url)->path;
+  $path =~ s{^/+}{};
+  my @parts = split m{/}, $path;
+  pop @parts;
+
+  return undef unless @parts;
+
+  return uri_unescape( join('/', @parts) );
 }
 
 sub _generate_release_notes {
@@ -363,6 +400,7 @@ In your F<dist.ini>:
 
  [GitHub::CreateRelease]
  repo = github_repo_name         ; optional
+ repo_owner = github_owner_name  ; optional
  branch = main                   ; default = main
  notes_as_code = 1               ; default = 1 (true)
  notes_from = SignReleaseNotes   ; default = SignReleaseNotes
@@ -451,6 +489,19 @@ cpan upload file.
 
 A string value that specifies the name of the github repository.  The module determines the
 name based on the remote url but this setting can override the name that is detected.
+
+=item repo_owner
+
+A string value that specifies the owner (user or organization) of the github repository.
+The module determines the owner based on the remote url (the same url used to detect
+C<repo>) but this setting can override the owner that is detected.
+
+If the owner cannot be determined from the remote url, the C<login> from the identity
+file (see B<GITHUB API AUTHENTICATION>) is used instead, which was the only behaviour
+before this attribute existed. That fallback only works when the identity's login is
+also the repository owner, so repositories owned by an account other than the one in
+the identity file (e.g. a repository you are a collaborator on) need either this
+attribute or a matching C<org_id> identity to create a release successfully.
 
 =item remote_name
 
