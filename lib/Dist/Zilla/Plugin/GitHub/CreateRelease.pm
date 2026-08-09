@@ -66,8 +66,14 @@ sub _create_release {
       generate_release_notes => $self->{github_notes} ? \1 : \0,
     }
   );
-  die "Discussion category name is invalid" if  ($release->response eq '404');
-  die "Validation failed, or the endpoint has been spammed." if  ($release->response eq '422');
+  # ->response is the underlying HTTP::Response object, not a status code
+  # string, so comparing it with `eq '404'`/`eq '422'` never matches and
+  # these two checks never fired; every failure fell through to the
+  # generic "Unable to create GitHub release" below. ->code (as already
+  # used for the 403 check two lines down) delegates to the response's
+  # numeric status and is what these comparisons need.
+  die "Discussion category name is invalid" if  ($release->code eq '404');
+  die "Validation failed, or the endpoint has been spammed." if  ($release->code eq '422');
   die "login ($identity{login}) or token invalid for the specified repository ($releases->{repo})\n"
       if  ($release->code eq '403');
 
