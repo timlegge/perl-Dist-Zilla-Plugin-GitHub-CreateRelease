@@ -2,7 +2,7 @@
 use v5.20;
 use Feature::Compat::Class;
 use feature 'signatures';
-
+# VERSION
 # PODNAME: createrelease.pl
 # ABSTRACT: Helper script to create a GitHub Release
 use Config::INI::Reader;
