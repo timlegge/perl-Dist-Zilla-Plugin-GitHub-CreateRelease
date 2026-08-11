@@ -68,7 +68,7 @@ class GitHub::Release {
     method get_dist_filename ($version) {
         return if ! defined $version;
         my $config      = Config::INI::Reader->read_file($self->get_config_filename());
-        if ($self->get_config_filename() ne 'dist.ini'){
+        if ($self->get_config_filename() ne 'dist.ini'  && ! defined $config->{'_'}{name}){
             my $dist = Config::INI::Reader->read_file('dist.ini');
             $config->{'_'}{name} = $dist->{'_'}{name};
         }
