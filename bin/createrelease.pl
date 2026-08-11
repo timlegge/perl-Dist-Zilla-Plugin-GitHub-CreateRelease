@@ -316,7 +316,7 @@ class GitHub::Release {
             @tags = $git->RUN(
                                 'for-each-ref',
                                 'refs/tags/*',
-                                '--sort=-taggerdate',
+                                '--sort=-version:refname',
                                 '--count=1',
                                 '--format=%(refname:short)'
                             );
@@ -359,7 +359,7 @@ class GitHub::Release {
         my $git = Git::Wrapper->new('./');
         my @tags;
         try {
-               @tags = $git->RUN('for-each-ref', 'refs/tags/*', '--sort=-taggerdate', '--count=2', '--format=%(refname:short)');
+               @tags = $git->RUN('for-each-ref', 'refs/tags/*', '--sort=-version:refname', '--count=1', '--format=%(refname:short)');
         }
         catch {
             $self->log("Unable to get the last two tags from git");
